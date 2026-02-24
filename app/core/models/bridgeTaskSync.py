@@ -25,7 +25,7 @@ class BridgeTaskSync(models.Model):
     git_base_branch = models.CharField(max_length=120)
     mr_id = models.CharField(max_length=120, blank=True, null=True)
     mr_url = models.URLField(blank=True, null=True)
-    status = models.CharField(max_length=30, choices=_SyncStatus.choices, default=SyncStatus.BRANCH_CREATED)
+    status = models.CharField(max_length=30, choices=_SyncStatus.choices, default=_SyncStatus.BRANCH_CREATED)
     last_event_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
