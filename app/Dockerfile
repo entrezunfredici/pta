@@ -5,7 +5,7 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock* requirements.txt requirements-dev.txt ./
 
 RUN python -m pip install --upgrade pip \
-    && if [ -f pyproject.toml ]; then pip install poetry && poetry install --no-interaction --no-root; \
+    && if [ -f pyproject.toml ]; then pip install --no-cache-dir poetry && poetry config virtualenvs.create false && poetry install --no-interaction --no-root; \
        elif [ -f requirements.txt ]; then pip install -r requirements.txt; \
        fi
 
