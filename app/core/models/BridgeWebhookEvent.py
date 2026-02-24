@@ -1,8 +1,10 @@
 from django.db import models
 
+
 class _Provider(models.TextChoices):
     GITLAB = "gitlab", "GitLab"
     GITHUB = "github", "GitHub"
+
 
 class Meta:
     db_table = "bridge_webhookevent"
@@ -17,6 +19,7 @@ class Meta:
         models.Index(fields=["provider", "event_type"]),
         models.Index(fields=["received_at"]),
     ]
+
 
 class BridgeWebhookEvent(models.Model):
     provider = models.CharField(max_length=20, choices=_Provider.choices)

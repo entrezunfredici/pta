@@ -10,6 +10,7 @@ class _SyncStatus(models.TextChoices):
     MERGED_MAIN = "merged_main", "Merged Main"
     CLOSED = "closed", "Closed"
 
+
 class Meta:
     db_table = "bridge_tasksync"
     indexes = [
@@ -18,6 +19,7 @@ class Meta:
         models.Index(fields=["last_event_at"]),
     ]
 
+
 class BridgeTaskSync(models.Model):
     odoo_task_id = models.BigIntegerField(unique=True)
     odoo_project_id = models.BigIntegerField()
@@ -25,7 +27,11 @@ class BridgeTaskSync(models.Model):
     git_base_branch = models.CharField(max_length=120)
     mr_id = models.CharField(max_length=120, blank=True, null=True)
     mr_url = models.URLField(blank=True, null=True)
-    status = models.CharField(max_length=30, choices=_SyncStatus.choices, default=_SyncStatus.BRANCH_CREATED)
+    status = models.CharField(
+        max_length=30,
+        choices=_SyncStatus.choices,
+        default=_SyncStatus.BRANCH_CREATED,
+    )
     last_event_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

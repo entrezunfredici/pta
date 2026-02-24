@@ -1,8 +1,10 @@
 from django.db import models
 
+
 class _GitProvider(models.TextChoices):
     GITLAB = "gitlab", "GitLab"
     GITHUB = "github", "GitHub"
+
 
 class Meta:
     db_table = "bridge_link"
@@ -10,6 +12,7 @@ class Meta:
         models.Index(fields=["git_provider", "git_repo"]),
         models.Index(fields=["is_active"]),
     ]
+
 
 class BridgeLink(models.Model):
     odoo_project_id = models.BigIntegerField(unique=True)

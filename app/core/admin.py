@@ -79,19 +79,41 @@ class AutomationRunLogAdmin(admin.ModelAdmin):
     search_fields = ("odoo_task_id", "source_branch", "created_branch", "message")
     autocomplete_fields = ("automation_rule",)
     ordering = ("-created_at",)
-    readonly_fields = ("automation_rule", "odoo_task_id", "status", "message", "created_branch", "source_branch", "created_at")
+    readonly_fields = (
+        "automation_rule",
+        "odoo_task_id",
+        "status",
+        "message",
+        "created_branch",
+        "source_branch",
+        "created_at",
+    )
 
 
 @admin.register(BridgeLink)
 class BridgeLinkAdmin(admin.ModelAdmin):
-    list_display = ("odoo_project_id", "git_provider", "git_repo", "default_base_branch", "main_branch", "is_active")
+    list_display = (
+        "odoo_project_id",
+        "git_provider",
+        "git_repo",
+        "default_base_branch",
+        "main_branch",
+        "is_active",
+    )
     list_filter = ("git_provider", "is_active")
     search_fields = ("odoo_project_id", "git_repo")
 
 
 @admin.register(BridgeTaskSync)
 class BridgeTaskSyncAdmin(admin.ModelAdmin):
-    list_display = ("odoo_task_id", "odoo_project_id", "git_branch", "git_base_branch", "status", "last_event_at")
+    list_display = (
+        "odoo_task_id",
+        "odoo_project_id",
+        "git_branch",
+        "git_base_branch",
+        "status",
+        "last_event_at",
+    )
     list_filter = ("status",)
     search_fields = ("odoo_task_id", "odoo_project_id", "git_branch")
 
@@ -101,4 +123,11 @@ class BridgeWebhookEventAdmin(admin.ModelAdmin):
     list_display = ("provider", "event_type", "event_id", "signature_ok", "received_at")
     list_filter = ("provider", "event_type", "signature_ok")
     search_fields = ("event_id", "event_type")
-    readonly_fields = ("provider", "event_type", "event_id", "signature_ok", "payload", "received_at")
+    readonly_fields = (
+        "provider",
+        "event_type",
+        "event_id",
+        "signature_ok",
+        "payload",
+        "received_at",
+    )

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import subprocess
-from urllib.parse import urlsplit, urlunsplit, quote
+from urllib.parse import quote, urlsplit, urlunsplit
 
 
 class GitClientError(Exception):
@@ -9,7 +9,12 @@ class GitClientError(Exception):
 
 
 class GitClient:
-    def __init__(self, repository_url: str, username: str | None = None, token: str | None = None) -> None:
+    def __init__(
+        self,
+        repository_url: str,
+        username: str | None = None,
+        token: str | None = None,
+    ) -> None:
         self.repository_url = repository_url
         self.username = username
         self.token = token
@@ -24,7 +29,9 @@ class GitClient:
         netloc = f"{safe_user}:{safe_token}@{split.hostname or ''}"
         if split.port:
             netloc = f"{netloc}:{split.port}"
-        return urlunsplit((split.scheme, netloc, split.path, split.query, split.fragment))
+        return urlunsplit(
+            (split.scheme, netloc, split.path, split.query, split.fragment)
+        )
 
     def _run(self, args: list[str]) -> str:
         proc = subprocess.run(args, capture_output=True, text=True, check=False)
@@ -33,7 +40,9 @@ class GitClient:
         return proc.stdout.strip()
 
     def get_branch_sha(self, branch_name: str) -> str | None:
-        output = self._run(["git", "ls-remote", self.auth_repository_url, f"refs/heads/{branch_name}"])
+        output = self._run(
+            ["git", "ls-remote", self.auth_repository_url, f"refs/heads/{branch_name}"]
+        )
         if not output:
             return None
         return output.split()[0]
@@ -46,5 +55,12 @@ class GitClient:
         source_sha = self.get_branch_sha(source_branch)
         if not source_sha:
             raise GitClientError(f"Source branch '{source_branch}' not found")
-        self._run(["git", "push", self.auth_repository_url, f"{source_sha}:refs/heads/{work_branch}"])
+        self._run(
+            [
+                "git",
+                "push",
+                self.auth_repository_url,
+                f"{source_sha}:refs/heads/{work_branch}",
+            ]
+        )
         return "created"

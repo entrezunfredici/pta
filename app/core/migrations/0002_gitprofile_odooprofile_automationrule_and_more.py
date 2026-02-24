@@ -5,94 +5,186 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GitProfile',
+            name="GitProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120, unique=True)),
-                ('provider', models.CharField(choices=[('github', 'GitHub'), ('gitlab', 'GitLab'), ('other', 'Other')], default='github', max_length=20)),
-                ('repository_url', models.URLField()),
-                ('username', models.CharField(blank=True, max_length=120, null=True)),
-                ('token', models.CharField(blank=True, max_length=255, null=True)),
-                ('default_source_branch', models.CharField(default='dev', max_length=120)),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120, unique=True)),
+                (
+                    "provider",
+                    models.CharField(
+                        choices=[
+                            ("github", "GitHub"),
+                            ("gitlab", "GitLab"),
+                            ("other", "Other"),
+                        ],
+                        default="github",
+                        max_length=20,
+                    ),
+                ),
+                ("repository_url", models.URLField()),
+                ("username", models.CharField(blank=True, max_length=120, null=True)),
+                ("token", models.CharField(blank=True, max_length=255, null=True)),
+                ("default_source_branch", models.CharField(default="dev", max_length=120)),
+                ("is_active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'git_profile',
-                'indexes': [models.Index(fields=['provider'], name='git_profile_provide_194c5e_idx'), models.Index(fields=['is_active'], name='git_profile_is_acti_4d2e95_idx')],
+                "db_table": "git_profile",
+                "indexes": [
+                    models.Index(fields=["provider"], name="git_profile_provide_194c5e_idx"),
+                    models.Index(fields=["is_active"], name="git_profile_is_acti_4d2e95_idx"),
+                ],
             },
         ),
         migrations.CreateModel(
-            name='OdooProfile',
+            name="OdooProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120, unique=True)),
-                ('base_url', models.URLField()),
-                ('database', models.CharField(max_length=120)),
-                ('email', models.EmailField(max_length=254)),
-                ('password', models.CharField(max_length=255)),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120, unique=True)),
+                ("base_url", models.URLField()),
+                ("database", models.CharField(max_length=120)),
+                ("email", models.EmailField(max_length=254)),
+                ("password", models.CharField(max_length=255)),
+                ("is_active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'odoo_profile',
-                'indexes': [models.Index(fields=['is_active'], name='odoo_profil_is_acti_275da2_idx')],
+                "db_table": "odoo_profile",
+                "indexes": [
+                    models.Index(fields=["is_active"], name="odoo_profil_is_acti_275da2_idx")
+                ],
             },
         ),
         migrations.CreateModel(
-            name='AutomationRule',
+            name="AutomationRule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=140, unique=True)),
-                ('odoo_project_id', models.BigIntegerField()),
-                ('odoo_project_name', models.CharField(blank=True, max_length=255, null=True)),
-                ('trigger_stage_id', models.BigIntegerField()),
-                ('trigger_stage_name', models.CharField(blank=True, max_length=255, null=True)),
-                ('source_branch_field', models.CharField(default='x_branch_source', max_length=120)),
-                ('work_branch_field', models.CharField(default='x_work_branch', max_length=120)),
-                ('is_active', models.BooleanField(default=True)),
-                ('last_run_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('git_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='automation_rules', to='core.gitprofile')),
-                ('odoo_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='automation_rules', to='core.odooprofile')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=140, unique=True)),
+                ("odoo_project_id", models.BigIntegerField()),
+                ("odoo_project_name", models.CharField(blank=True, max_length=255, null=True)),
+                ("trigger_stage_id", models.BigIntegerField()),
+                ("trigger_stage_name", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "source_branch_field",
+                    models.CharField(default="x_branch_source", max_length=120),
+                ),
+                ("work_branch_field", models.CharField(default="x_work_branch", max_length=120)),
+                ("is_active", models.BooleanField(default=True)),
+                ("last_run_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "git_profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="automation_rules",
+                        to="core.gitprofile",
+                    ),
+                ),
+                (
+                    "odoo_profile",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="automation_rules",
+                        to="core.odooprofile",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'automation_rule',
+                "db_table": "automation_rule",
             },
         ),
         migrations.CreateModel(
-            name='AutomationRunLog',
+            name="AutomationRunLog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('odoo_task_id', models.BigIntegerField()),
-                ('status', models.CharField(choices=[('created', 'Created'), ('skipped', 'Skipped'), ('failed', 'Failed'), ('already_exists', 'Already Exists')], max_length=20)),
-                ('message', models.TextField(blank=True, null=True)),
-                ('created_branch', models.CharField(blank=True, max_length=255, null=True)),
-                ('source_branch', models.CharField(blank=True, max_length=255, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('automation_rule', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='runs', to='core.automationrule')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("odoo_task_id", models.BigIntegerField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("created", "Created"),
+                            ("skipped", "Skipped"),
+                            ("failed", "Failed"),
+                            ("already_exists", "Already Exists"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("message", models.TextField(blank=True, null=True)),
+                ("created_branch", models.CharField(blank=True, max_length=255, null=True)),
+                ("source_branch", models.CharField(blank=True, max_length=255, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "automation_rule",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="runs",
+                        to="core.automationrule",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'automation_run_log',
-                'indexes': [models.Index(fields=['odoo_task_id'], name='automation__odoo_ta_0a4b06_idx'), models.Index(fields=['status'], name='automation__status_915cbe_idx'), models.Index(fields=['created_at'], name='automation__created_394a16_idx')],
+                "db_table": "automation_run_log",
+                "indexes": [
+                    models.Index(
+                        fields=["odoo_task_id"],
+                        name="automation__odoo_ta_0a4b06_idx",
+                    ),
+                    models.Index(fields=["status"], name="automation__status_915cbe_idx"),
+                    models.Index(fields=["created_at"], name="automation__created_394a16_idx"),
+                ],
             },
         ),
         migrations.AddIndex(
-            model_name='automationrule',
-            index=models.Index(fields=['odoo_project_id', 'trigger_stage_id'], name='automation__odoo_pr_afe517_idx'),
+            model_name="automationrule",
+            index=models.Index(
+                fields=["odoo_project_id", "trigger_stage_id"],
+                name="automation__odoo_pr_afe517_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='automationrule',
-            index=models.Index(fields=['is_active'], name='automation__is_acti_e15132_idx'),
+            model_name="automationrule",
+            index=models.Index(fields=["is_active"], name="automation__is_acti_e15132_idx"),
         ),
     ]

@@ -165,7 +165,10 @@ def git_profiles(request: HttpRequest) -> JsonResponse:
         payload = _parse_json(request)
         profile = GitProfile.objects.create(
             name=payload["name"],
-            provider=payload.get("provider", GitProfile._meta.get_field("provider").default),
+            provider=payload.get(
+                "provider",
+                GitProfile._meta.get_field("provider").default,
+            ),
             repository_url=payload["repository_url"],
             username=payload.get("username"),
             token=payload.get("token"),
@@ -203,7 +206,9 @@ def git_profile_test(request: HttpRequest, profile_id: int) -> JsonResponse:
     except GitClientError as exc:
         return JsonResponse({"ok": False, "error": str(exc)}, status=400)
 
-    return JsonResponse({"ok": True, "default_source_branch": source_branch, "sha": sha})
+    return JsonResponse(
+        {"ok": True, "default_source_branch": source_branch, "sha": sha}
+    )
 
 
 @csrf_exempt
@@ -211,7 +216,10 @@ def git_profile_test(request: HttpRequest, profile_id: int) -> JsonResponse:
 def automations(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
         rows = []
-        for rule in AutomationRule.objects.select_related("odoo_profile", "git_profile").order_by("name"):
+        for rule in (
+            AutomationRule.objects.select_related("odoo_profile", "git_profile")
+            .order_by("name")
+        ):
             rows.append(
                 {
                     "id": rule.id,
@@ -295,7 +303,9 @@ def automation_run_task(request: HttpRequest, automation_id: int) -> JsonRespons
             }
         )
 
-    source_branch = task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
+    source_branch = (
+        task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
+    )
     work_branch = task.get(rule.work_branch_field) or ""
     if not work_branch.strip():
         AutomationRunLog.objects.create(
@@ -309,7 +319,10 @@ def automation_run_task(request: HttpRequest, automation_id: int) -> JsonRespons
 
     git_client = _git_client(rule.git_profile)
     try:
-        result = git_client.create_branch(source_branch=source_branch, work_branch=work_branch.strip())
+        result = git_client.create_branch(
+            source_branch=source_branch,
+            work_branch=work_branch.strip(),
+        )
     except GitClientError as exc:
         AutomationRunLog.objects.create(
             automation_rule=rule,
