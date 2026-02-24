@@ -4,3 +4,8 @@ django-allauth
 django-oauth-toolkit
 gunicorn
 psycopg[binary]
+ruff
+mypy
+pytest
+pytest-django
+build
