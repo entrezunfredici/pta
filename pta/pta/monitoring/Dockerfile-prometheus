@@ -1,0 +1,44 @@
+﻿# Prometheus image built on the shared my OS base (ubuntu 22).
+FROM lmt-os:latest
+
+# Prometheus version to install.
+ARG PROMETHEUS_VERSION=2.52.0
+
+# Detect architecture for correct download.
+ARG TARGETARCH
+
+# Download and install Prometheus, create user and directories.
+RUN if [ -z "${TARGETARCH:-}" ]; then \
+    TARGETARCH="$(dpkg --print-architecture)"; \
+  fi \
+ && case "$TARGETARCH" in \
+    amd64|x86_64) prom_arch="amd64" ;; \
+    arm64|aarch64) prom_arch="arm64" ;; \
+    *) echo "Unsupported architecture: $TARGETARCH" >&2; exit 1 ;; \
+  esac \
+ && useradd --system --no-create-home --shell /usr/sbin/nologin prometheus \
+   && mkdir -p /etc/prometheus /var/lib/prometheus /opt/prometheus \
+   && curl -fsSL -o /tmp/prometheus.tar.gz \
+      "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-${prom_arch}.tar.gz" \
+   && tar -xzf /tmp/prometheus.tar.gz -C /opt/prometheus --strip-components=1 \
+   && mv /opt/prometheus/prometheus /usr/local/bin/prometheus \
+   && mv /opt/prometheus/promtool /usr/local/bin/promtool \
+   && chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus /opt/prometheus \
+   && rm -f /tmp/prometheus.tar.gz
+
+# Prometheus configuration file.
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+# Ensure the Prometheus user owns its config.
+RUN chown prometheus:prometheus /etc/prometheus/prometheus.yml
+
+# Run as the unprivileged Prometheus user.
+USER prometheus
+
+# Document the container port.
+EXPOSE 9090
+
+# Start Prometheus.
+CMD ["prometheus", "--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.path=/var/lib/prometheus", "--web.listen-address=0.0.0.0:9090"]
+
+# Use SIGTERM for graceful shutdown.
+STOPSIGNAL SIGTERM

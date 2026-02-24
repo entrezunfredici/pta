@@ -1,0 +1,131 @@
+{% if ci_provider == "gitlab" %}
+stages:
+  - lint
+  - test
+  - build
+  - security
+{% if stack_preset != "none" %}
+  - docker
+  - deploy
+{% endif %}
+
+{% if stack_preset == "django" %}
+image: python:{{ python_version }}
+
+variables:
+  PIP_CACHE_DIR: .cache/pip
+
+cache:
+  paths:
+    - .cache/pip
+    - .cache/pypoetry
+
+before_script:
+  - python -m pip install --upgrade pip
+{% if python_tooling == "poetry" %}
+  - python -m pip install poetry
+{% elif python_tooling == "uv" %}
+  - python -m pip install uv
+{% endif %}
+{% elif stack_preset == "express-vue" %}
+image: node:{{ node_version }}
+
+cache:
+  paths:
+    - .npm
+    - api/node_modules
+    - frontend/node_modules
+{% endif %}
+
+lint:
+  stage: lint
+  interruptible: true
+  script:
+    - make ci-setup
+    - make lint
+    - make format-check
+    - make typecheck
+
+test:
+  stage: test
+  interruptible: true
+  script:
+    - make ci-setup
+    - make test
+
+build:
+  stage: build
+  interruptible: true
+  script:
+    - make ci-setup
+    - make build
+
+security:
+  stage: security
+  interruptible: true
+  script:
+{% if stack_preset == "django" %}
+    - make ci-setup
+    - python -m pip install pip-audit
+    - pip-audit
+{% elif stack_preset == "express-vue" %}
+    - make ci-setup
+    - npm audit --audit-level=high
+{% else %}
+    - echo "security" && exit 0
+{% endif %}
+
+{% if stack_preset != "none" %}
+docker_build:
+  stage: docker
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      variables:
+        IMAGE_TAG: "prod"
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      variables:
+        IMAGE_TAG: "preprod"
+    - when: never
+  script:
+    - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
+{% if stack_preset == "django" %}
+    - docker build -t {{ dockerhub_namespace }}/{{ web_image_name }}:$IMAGE_TAG -t {{ dockerhub_namespace }}/{{ web_image_name }}:$CI_COMMIT_SHA app
+    - docker push {{ dockerhub_namespace }}/{{ web_image_name }}:$IMAGE_TAG
+    - docker push {{ dockerhub_namespace }}/{{ web_image_name }}:$CI_COMMIT_SHA
+{% elif stack_preset == "express-vue" %}
+    - docker build -t {{ dockerhub_namespace }}/{{ api_image_name }}:$IMAGE_TAG -t {{ dockerhub_namespace }}/{{ api_image_name }}:$CI_COMMIT_SHA api
+    - docker push {{ dockerhub_namespace }}/{{ api_image_name }}:$IMAGE_TAG
+    - docker push {{ dockerhub_namespace }}/{{ api_image_name }}:$CI_COMMIT_SHA
+    - docker build -t {{ dockerhub_namespace }}/{{ frontend_image_name }}:$IMAGE_TAG -t {{ dockerhub_namespace }}/{{ frontend_image_name }}:$CI_COMMIT_SHA frontend
+    - docker push {{ dockerhub_namespace }}/{{ frontend_image_name }}:$IMAGE_TAG
+    - docker push {{ dockerhub_namespace }}/{{ frontend_image_name }}:$CI_COMMIT_SHA
+{% endif %}
+
+deploy:
+  stage: deploy
+  image: alpine:3.19
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      variables:
+        IMAGE_TAG: "prod"
+        DEPLOY_HOST: "$PROD_HOST"
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      variables:
+        IMAGE_TAG: "preprod"
+        DEPLOY_HOST: "$PREPROD_HOST"
+    - when: never
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  script:
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "export IMAGE_TAG=$IMAGE_TAG STACK_NAME={{ deploy_stack_name }} DEPLOY_PATH={{ deploy_path }}; cd {{ deploy_path }}; sh scripts/deploy_swarm.sh"
+{% endif %}
+{% endif %}

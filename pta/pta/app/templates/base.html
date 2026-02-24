@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ project_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/colors.css' %}" />
+    {% block page_css %}{% endblock %}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/">{{ project_name }}</a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="{% url 'account_login' %}">Login</a>
+          <a href="{% url 'account_signup' %}">Sign up</a>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

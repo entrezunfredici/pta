@@ -1,0 +1,22 @@
+﻿# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Env
+.env
+.env.*
+
+# Build
+/dist/
+/build/

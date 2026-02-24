@@ -1,0 +1,33 @@
+.form-shell {
+  max-width: 480px;
+  margin: 32px auto;
+  background: var(--color-surface);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.form-shell h1 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
+
+.form-shell input,
+.form-shell select,
+.form-shell textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.form-shell button {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}

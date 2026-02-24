@@ -1,0 +1,21 @@
+{
+  "name": "{{ project_slug }}-api",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "build": "echo \"api build noop\"",
+    "lint": "echo \"lint not configured\"",
+    "format": "echo \"format not configured\"",
+    "format:check": "echo \"format check not configured\"",
+    "typecheck": "echo \"typecheck not configured\"",
+    "test": "echo \"no tests\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,6 @@
+﻿{% if use_docker %}
+.git
+.env
+node_modules
+__pycache__
+{% endif %}

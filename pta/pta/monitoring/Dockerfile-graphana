@@ -1,0 +1,24 @@
+﻿# Grafana image built on the shared my OS base (ubuntu 22).
+FROM lmt-os:latest
+
+# Install Grafana from the official repository.
+RUN install -d /etc/apt/keyrings \
+    && curl -fsSL https://apt.grafana.com/gpg.key \
+    | gpg --dearmor -o /etc/apt/keyrings/grafana.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" \
+    > /etc/apt/sources.list.d/grafana.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends grafana \
+    && rm -rf /var/lib/apt/lists/*
+
+# Persist Grafana data.
+VOLUME /var/lib/grafana
+
+# Document the container port.
+EXPOSE 3000
+
+# Start Grafana.
+CMD ["grafana-server", "--homepath=/usr/share/grafana", "--config=/etc/grafana/grafana.ini", "--packaging=deb"]
+
+# Use SIGTERM for graceful shutdown.
+STOPSIGNAL SIGTERM

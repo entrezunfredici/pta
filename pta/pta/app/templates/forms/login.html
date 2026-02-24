@@ -1,0 +1,30 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+  <header class="auth-header">
+    <h1>{% trans "Sign In" %}</h1>
+    <p>Accédez à votre espace mémoire sécurisé.</p>
+  </header>
+
+  <form method="post" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <div class="auth-actions">
+      <button type="submit">{% trans "Sign In" %}</button>
+    </div>
+  </form>
+
+  <p class="auth-footer">
+    <a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  </p>
+  <p class="auth-footer">
+    Pas encore de compte ?
+    <a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+  </p>
+{% endblock %}
