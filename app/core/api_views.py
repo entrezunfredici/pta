@@ -206,9 +206,7 @@ def git_profile_test(request: HttpRequest, profile_id: int) -> JsonResponse:
     except GitClientError as exc:
         return JsonResponse({"ok": False, "error": str(exc)}, status=400)
 
-    return JsonResponse(
-        {"ok": True, "default_source_branch": source_branch, "sha": sha}
-    )
+    return JsonResponse({"ok": True, "default_source_branch": source_branch, "sha": sha})
 
 
 @csrf_exempt
@@ -216,9 +214,8 @@ def git_profile_test(request: HttpRequest, profile_id: int) -> JsonResponse:
 def automations(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
         rows = []
-        for rule in (
-            AutomationRule.objects.select_related("odoo_profile", "git_profile")
-            .order_by("name")
+        for rule in AutomationRule.objects.select_related("odoo_profile", "git_profile").order_by(
+            "name"
         ):
             rows.append(
                 {
@@ -303,9 +300,7 @@ def automation_run_task(request: HttpRequest, automation_id: int) -> JsonRespons
             }
         )
 
-    source_branch = (
-        task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
-    )
+    source_branch = task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
     work_branch = task.get(rule.work_branch_field) or ""
     if not work_branch.strip():
         AutomationRunLog.objects.create(
