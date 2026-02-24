@@ -13,7 +13,7 @@ class OdooClient:
         self.database = database
         self.email = email
         self.password = password
-        self._uid = None
+        self._uid: int | None = None
 
     @property
     def common(self) -> xmlrpc.client.ServerProxy:
@@ -30,7 +30,7 @@ class OdooClient:
             self.password,
             {},
         )
-        if not uid:
+        if not isinstance(uid, int) or isinstance(uid, bool) or uid <= 0:
             raise OdooClientError("Authentication failed")
         self._uid = uid
         return uid
