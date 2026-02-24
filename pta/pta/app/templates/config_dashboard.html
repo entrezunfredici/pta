@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Configuration Odoo - Git</h1>
+  <p>Utilisez Django Admin pour creer vos profils et vos automations.</p>
+</section>
+
+<section>
+  <h2>Acces rapide</h2>
+  <ul>
+    <li><a href="/admin/core/odooprofile/">Profils Odoo</a> ({{ odoo_profiles_count }})</li>
+    <li><a href="/admin/core/gitprofile/">Profils Git</a> ({{ git_profiles_count }})</li>
+    <li><a href="/admin/core/automationrule/">Automations</a> ({{ automation_rules_count }})</li>
+    <li><a href="/admin/core/automationrunlog/">Logs d'execution</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Workflow conseille</h2>
+  <ol>
+    <li>Creer un profil Odoo et tester via l'API.</li>
+    <li>Creer un profil Git avec token et depot.</li>
+    <li>Creer une automation en selectionnant le projet et l'etape declencheuse.</li>
+    <li>Declencher l'execution sur une tache avec l'endpoint run-task.</li>
+  </ol>
+</section>
+{% endblock %}
