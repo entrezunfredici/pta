@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ptw-web
+  namespace: ptw
+  labels:
+    app: ptw-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ptw-web
+  template:
+    metadata:
+      labels:
+        app: ptw-web
+    spec:
+      containers:
+        - name: web
+          image: __IMAGE__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: django-env

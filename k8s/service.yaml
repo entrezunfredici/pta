@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ptw-web
+  namespace: ptw
+spec:
+  type: ClusterIP
+  selector:
+    app: ptw-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
