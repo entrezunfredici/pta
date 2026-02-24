@@ -303,9 +303,7 @@ def automation_run_task(request: HttpRequest, automation_id: int) -> JsonRespons
             }
         )
 
-    source_branch = (
-        task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
-    )
+    source_branch = task.get(rule.source_branch_field) or rule.git_profile.default_source_branch
     work_branch = task.get(rule.work_branch_field) or ""
     if not work_branch.strip():
         AutomationRunLog.objects.create(

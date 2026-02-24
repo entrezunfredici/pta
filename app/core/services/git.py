@@ -29,9 +29,7 @@ class GitClient:
         netloc = f"{safe_user}:{safe_token}@{split.hostname or ''}"
         if split.port:
             netloc = f"{netloc}:{split.port}"
-        return urlunsplit(
-            (split.scheme, netloc, split.path, split.query, split.fragment)
-        )
+        return urlunsplit((split.scheme, netloc, split.path, split.query, split.fragment))
 
     def _run(self, args: list[str]) -> str:
         proc = subprocess.run(args, capture_output=True, text=True, check=False)
@@ -56,11 +54,6 @@ class GitClient:
         if not source_sha:
             raise GitClientError(f"Source branch '{source_branch}' not found")
         self._run(
-            [
-                "git",
-                "push",
-                self.auth_repository_url,
-                f"{source_sha}:refs/heads/{work_branch}",
-            ]
+            ["git", "push", self.auth_repository_url, f"{source_sha}:refs/heads/{work_branch}"]
         )
         return "created"
